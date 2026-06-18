@@ -1,12 +1,10 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-var Priority;
+export var Priority;
 (function (Priority) {
     Priority["low"] = "low";
     Priority["medium"] = "medium";
     Priority["high"] = "high";
 })(Priority || (Priority = {}));
-var Status;
+export var Status;
 (function (Status) {
     Status["todo"] = "todo";
     Status["inProgress"] = "inProgress";

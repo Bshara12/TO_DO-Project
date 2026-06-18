@@ -5,19 +5,25 @@ export interface TaskInterface {
     status: Status;
     priority: Priority;
     tags: string[];
-    dueDate: Date;
+    dueDate: Date | null;
     createdAt: Date;
-    completedAt: Date;
+    completedAt: Date | null;
 }
-declare enum Priority {
+export interface Settings {
+    theme: string;
+    defaultView: string;
+    pomodoroTime: number;
+    breakTime: number;
+    defaultPriority: Priority;
+}
+export declare enum Priority {
     low = "low",
     medium = "medium",
     high = "high"
 }
-declare enum Status {
+export declare enum Status {
     todo = "todo",
     inProgress = "inProgress",
     done = "done"
 }
-export {};
 //# sourceMappingURL=task.types.d.ts.map

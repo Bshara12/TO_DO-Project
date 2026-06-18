@@ -5,20 +5,26 @@ export interface TaskInterface {
   status: Status
   priority: Priority
   tags: string[]
-  dueDate: Date
+  dueDate: Date|null
   createdAt: Date
-  completedAt: Date
+  completedAt: Date|null
 }
 
-interface Settings {}
+export interface Settings {
+  theme: string
+  defaultView: string
+  pomodoroTime: number
+  breakTime: number
+  defaultPriority: Priority
+}
 
-enum Priority {
+export enum Priority {
   low = 'low',
   medium = 'medium',
   high = 'high'
 }
 
-enum Status {
+export enum Status {
   todo = 'todo',
   inProgress = 'inProgress',
   done = 'done'

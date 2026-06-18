@@ -1,1 +1,1 @@
-{"version":3,"file":"taskCard.d.ts","sourceRoot":"","sources":["../../src/components/taskCard.ts"],"names":[],"mappings":""}
+{"version":3,"file":"taskCard.d.ts","sourceRoot":"","sources":["../../src/components/taskCard.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,aAAa,EAAE,MAAM,qBAAqB,CAAA;AAGnD,wBAAgB,QAAQ,CAAC,IAAI,EAAE,aAAa,GAAG,MAAM,CAgBpD"}

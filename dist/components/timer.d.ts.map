@@ -1,1 +1,1 @@
-{"version":3,"file":"timer.d.ts","sourceRoot":"","sources":["../../src/components/timer.ts"],"names":[],"mappings":""}
+{"version":3,"file":"timer.d.ts","sourceRoot":"","sources":["../../src/components/timer.ts"],"names":[],"mappings":"AAEA,wBAAgB,UAAU,CACxB,OAAO,EAAE,MAAM,EACf,MAAM,EAAE,CAAC,CAAC,EAAE,MAAM,KAAK,IAAI,EAC3B,KAAK,EAAE,MAAM,IAAI,QAalB;AAED,wBAAgB,SAAS,SAExB"}

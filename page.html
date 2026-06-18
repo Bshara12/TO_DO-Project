@@ -1,15 +1,236 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>To-Do</title>
-  </head>
-  <body>
-    <h1>TypeScript Test</h1>
-    <button id="btn">Click me</button>
-    <p id="output"></p>
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>TaskFlow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./styles/main.css">
+</head>
+<body>
 
-    <script src="test.js"></script>
-  </body>
+<div class="app">
+
+  <!-- ═══ SIDEBAR ═══ -->
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-top">
+      <div class="logo">
+        <div class="logo-mark">✦</div>
+        <div class="logo-text">Task<span class="logo-dot">.</span>Flow</div>
+      </div>
+      <div class="nav-section">
+        <div class="nav-label">Views</div>
+        <div class="nav-item active" id="nav-list" onclick="setView('list',this)">
+          <span class="nav-icon">☰</span> List
+          <span class="nav-badge" id="badge-today">0</span>
+        </div>
+        <div class="nav-item" id="nav-kanban" onclick="setView('kanban',this)">
+          <span class="nav-icon">⊞</span> Kanban
+        </div>
+        <div class="nav-item" id="nav-focus" onclick="setView('focus',this)">
+          <span class="nav-icon">◎</span> Focus Mode
+        </div>
+      </div>
+      <div class="nav-section">
+        <div class="nav-label">Filter</div>
+        <div class="nav-item" onclick="setListFilter('today');setView('list',document.getElementById('nav-list'))">
+          <span class="nav-icon">🌅</span> Today
+        </div>
+        <div class="nav-item" onclick="setListFilter('upcoming');setView('list',document.getElementById('nav-list'))">
+          <span class="nav-icon">📅</span> Upcoming
+        </div>
+        <div class="nav-item" onclick="setListFilter('done');setView('list',document.getElementById('nav-list'))">
+          <span class="nav-icon">✅</span> Completed
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar-stats">
+      <div class="stats-title">Overview</div>
+      <div class="stats-row">
+        <div class="stat-box stat-todo"><div class="stat-num" id="s-todo">0</div><div class="stat-lbl">Todo</div></div>
+        <div class="stat-box stat-prog"><div class="stat-num" id="s-prog">0</div><div class="stat-lbl">Active</div></div>
+        <div class="stat-box stat-done"><div class="stat-num" id="s-done">0</div><div class="stat-lbl">Done</div></div>
+      </div>
+    </div>
+
+    <div class="sidebar-footer">
+      <button class="add-task-btn" onclick="openModal()">
+        <span style="font-size:18px">+</span> Add Task
+      </button>
+    </div>
+  </nav>
+
+  <!-- ═══ MAIN ═══ -->
+  <div class="main">
+
+    <!-- Header -->
+    <div class="header" id="header">
+      <div>
+        <div class="header-title" id="h-title">Today</div>
+        <div class="header-sub" id="h-sub">0 tasks remaining</div>
+      </div>
+      <div class="view-tabs" id="list-tabs">
+        <div class="view-tab active" onclick="setListFilter('today');switchTab(this)">Today</div>
+        <div class="view-tab" onclick="setListFilter('upcoming');switchTab(this)">Upcoming</div>
+        <div class="view-tab" onclick="setListFilter('all');switchTab(this)">All</div>
+      </div>
+      <div class="search-wrap">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+        </svg>
+        <input class="search-input" placeholder="Search..." oninput="onSearch(this.value)" id="search-inp">
+      </div>
+    </div>
+
+    <!-- Content -->
+    <div class="content-area">
+
+      <!-- LIST -->
+      <div class="view-panel active" id="list-panel">
+        <div id="list-container"></div>
+      </div>
+
+      <!-- KANBAN -->
+      <div class="view-panel" id="kanban-panel">
+        <div class="kanban-board" id="kanban-board"></div>
+      </div>
+
+      <!-- FOCUS -->
+      <div class="view-panel" id="focus-panel">
+        <div class="focus-wrap" id="focus-wrap">
+
+          <!-- START -->
+          <div class="focus-content show" id="fs-start">
+            <div style="text-align:center">
+              <div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.15em;margin-bottom:8px;font-weight:600">Focus Mode</div>
+              <div style="font-family:var(--font-head);font-size:30px;font-weight:800;letter-spacing:-.5px;margin-bottom:4px">Ready to Focus?</div>
+              <div style="font-size:14px;color:var(--text2)">Pick a task, set the timer, get it done.</div>
+            </div>
+            <div class="focus-task-box">
+              <div class="ftb-label">Selected Task</div>
+              <div class="ftb-title" id="ft-title">No task selected</div>
+              <div class="ftb-sub" id="ft-sub">Click ◎ on any task to select it</div>
+            </div>
+            <div class="dur-row">
+              <div class="dur-label">Duration</div>
+              <button class="dur-btn active" onclick="setDur(25,this)">25 min</button>
+              <button class="dur-btn" onclick="setDur(45,this)">45 min</button>
+              <button class="dur-btn" onclick="setDur(60,this)">60 min</button>
+            </div>
+            <button class="f-btn f-btn-primary" onclick="startFocus()">▶ Start Focus</button>
+          </div>
+
+          <!-- RUNNING -->
+          <div class="focus-content" id="fs-run">
+            <div style="font-family:var(--font-head);font-size:13px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.15em;text-align:center" id="run-mode-lbl">Focusing</div>
+            <div class="timer-wrap">
+              <div class="timer-halo"></div>
+              <div class="timer-halo2"></div>
+              <svg class="timer-svg" width="240" height="240" viewBox="0 0 240 240">
+                <defs>
+                  <linearGradient id="tg" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#5b8fff"/>
+                    <stop offset="100%" stop-color="#a855f7"/>
+                  </linearGradient>
+                </defs>
+                <circle class="t-bg" cx="120" cy="120" r="108"/>
+                <circle class="t-prog" id="t-ring" cx="120" cy="120" r="108"
+                  stroke="url(#tg)" stroke-dasharray="678.6" stroke-dashoffset="0"/>
+              </svg>
+              <div class="timer-face">
+                <div class="timer-digits" id="t-disp">25:00</div>
+                <div class="timer-mode" id="t-mode">Focusing</div>
+              </div>
+            </div>
+            <div class="focus-task-box">
+              <div class="ftb-label">Working On</div>
+              <div class="ftb-title" id="run-title">Task Name</div>
+              <div class="ftb-sub">Stay focused, you got this!</div>
+            </div>
+            <div class="focus-btns">
+              <button class="f-btn f-btn-ghost" onclick="pauseResume()" id="pause-btn">⏸ Pause</button>
+              <button class="f-btn f-btn-danger" onclick="giveUp()">✕ Give Up</button>
+            </div>
+          </div>
+
+          <!-- COMPLETE -->
+          <div class="focus-content" id="fs-done">
+            <div class="complete-ring">✓</div>
+            <div style="text-align:center">
+              <div style="font-family:var(--font-head);font-size:28px;font-weight:800;margin-bottom:6px">Session Complete!</div>
+              <div style="font-size:14px;color:var(--text2)">Great work. Take a deserved break.</div>
+            </div>
+            <div class="sessions-row" id="session-pips"></div>
+            <div class="focus-btns">
+              <button class="f-btn f-btn-ghost" onclick="exitFocusMode()">✕ Exit Focus</button>
+              <button class="f-btn f-btn-primary" onclick="markFocusDone()">✓ Mark Task Done</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MODAL ═══ -->
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title" id="modal-h">Add Task</div>
+      <button class="close-btn" onclick="closeModal()">✕</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Title</label>
+      <input class="form-input" id="f-title" placeholder="What needs to be done?">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Description</label>
+      <textarea class="form-input" id="f-desc" placeholder="Add details..." rows="2"></textarea>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Priority</label>
+        <select class="form-input" id="f-pri">
+          <option value="low">🟢 Low</option>
+          <option value="medium" selected>🟡 Medium</option>
+          <option value="high">🔴 High</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Status</label>
+        <select class="form-input" id="f-stat">
+          <option value="todo">Todo</option>
+          <option value="inProgress">In Progress</option>
+          <option value="done">Done</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Due Date</label>
+        <input class="form-input" type="date" id="f-date">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Tags</label>
+        <input class="form-input" id="f-tags" placeholder="work, design, research">
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="m-btn m-btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="m-btn m-btn-save" onclick="saveTask()">Save Task</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <div class="toast-dot" id="t-dot"></div>
+  <span id="t-msg"></span>
+</div>
+
+<script src="./dist/app.js"></script>
+</body>
 </html>
